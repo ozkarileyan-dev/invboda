@@ -28,7 +28,10 @@ export default async function handler(request, response) {
         headers: { Prefer: "return=minimal" },
         body: JSON.stringify({ token_id: invitation.id, ip_hash: ipHash, user_agent: userAgent, referrer, request_path: "/" })
       })
-    ]);
+    ]).catch((trackingError) => {
+      // El registro de telemetría no debe impedir que la familia vea su invitación.
+      console.error("No fue posible registrar la visita", trackingError);
+    });
 
     return response.status(200).json(invitationPayload(invitation));
   } catch (error) {
