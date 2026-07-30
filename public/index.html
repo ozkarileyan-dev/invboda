@@ -425,6 +425,11 @@
                         </div>
                         <div id="invitation-loading" class="rsvp-message" role="status">Estamos preparando tu invitación…</div>
                         <div id="invitation-error" class="rsvp-message rsvp-message-error" role="alert" hidden></div>
+                        <div id="rsvp-summary" class="rsvp-summary" hidden aria-live="polite">
+                            <p id="rsvp-summary-text" class="rsvp-greeting"></p>
+                            <p id="rsvp-summary-message" class="rsvp-detail" hidden></p>
+                            <button id="change-rsvp" type="button" class="rsvp-change-button">Cambiar respuesta</button>
+                        </div>
                         <form id="rsvp-form" hidden novalidate>
                             <p class="rsvp-greeting">Hola, <strong id="family-name"></strong>.</p>
                             <p class="rsvp-detail">Esta invitación está reservada para <strong id="guest-count"></strong>.</p>

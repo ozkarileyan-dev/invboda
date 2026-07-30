@@ -1,5 +1,6 @@
 #rsvp-form[hidden],
-#invitation-error[hidden] {
+#invitation-error[hidden],
+#rsvp-summary[hidden] {
   display: none;
 }
 
@@ -76,4 +77,22 @@
 
 .rsvp-message-error {
   color: #a52035;
+}
+
+.rsvp-summary {
+  margin: 16px 0;
+  text-align: center;
+}
+
+.rsvp-change-button {
+  background: transparent;
+  border: 1px solid #a3888c;
+  color: #002642;
+  cursor: pointer;
+  padding: 11px 18px;
+}
+
+.rsvp-change-button:hover,
+.rsvp-change-button:focus {
+  background: #f7f0f1;
 }
