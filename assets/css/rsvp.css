@@ -1,0 +1,55 @@
+#rsvp-form[hidden],
+#invitation-error[hidden] {
+  display: none;
+}
+
+.rsvp-greeting {
+  margin: 0 0 8px;
+  color: #002642;
+  font-size: 20px;
+}
+
+.rsvp-detail {
+  margin-bottom: 26px;
+}
+
+#rsvp-form fieldset {
+  border: 0;
+  margin: 0 0 26px;
+  padding: 0;
+}
+
+#rsvp-form legend {
+  color: #002642;
+  font-family: "Great Vibes", cursive;
+  font-size: 30px;
+  margin-bottom: 16px;
+}
+
+.rsvp-option {
+  align-items: center;
+  border: 1px solid #e7dedf;
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+  padding: 14px 16px;
+}
+
+.rsvp-option:has(input:checked) {
+  background: #f7f0f1;
+  border-color: #a3888c;
+}
+
+.rsvp-option input {
+  accent-color: #a3888c;
+}
+
+.rsvp-message {
+  margin: 16px 0;
+  text-align: center;
+}
+
+.rsvp-message-error {
+  color: #a52035;
+}
