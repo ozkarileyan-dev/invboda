@@ -28,6 +28,7 @@ export default function AdminPage() {
   const [formDisplayName, setFormDisplayName] = useState("");
   const [formRefCode, setFormRefCode] = useState("");
   const [formGuestCount, setFormGuestCount] = useState(2);
+  const [formGuestNames, setFormGuestNames] = useState("");
   const [formNotes, setFormNotes] = useState("");
   const [formActive, setFormActive] = useState(true);
   const [formGenerateToken, setFormGenerateToken] = useState(true);
@@ -167,6 +168,7 @@ export default function AdminPage() {
     setFormDisplayName("");
     setFormRefCode("");
     setFormGuestCount(2);
+    setFormGuestNames("");
     setFormNotes("");
     setFormActive(true);
     setFormGenerateToken(true);
@@ -178,6 +180,7 @@ export default function AdminPage() {
     setFormDisplayName(fam.display_name || "");
     setFormRefCode(fam.reference_code || "");
     setFormGuestCount(fam.invited_guest_count || 2);
+    setFormGuestNames(fam.guest_names || "");
     setFormNotes(fam.internal_notes || "");
     setFormActive(fam.active !== false);
     setFormGenerateToken(false);
@@ -208,6 +211,7 @@ export default function AdminPage() {
             display_name: formDisplayName,
             reference_code: formRefCode,
             invited_guest_count: formGuestCount,
+            guest_names: formGuestNames,
             internal_notes: formNotes,
             active: formActive,
             generate_token: formGenerateToken
@@ -239,6 +243,7 @@ export default function AdminPage() {
             display_name: formDisplayName,
             reference_code: formRefCode,
             invited_guest_count: formGuestCount,
+            guest_names: formGuestNames,
             internal_notes: formNotes,
             active: formActive
           })
@@ -373,6 +378,7 @@ export default function AdminPage() {
       "Familia",
       "Codigo Referencia",
       "Pases Invitados",
+      "Invitados Contemplados",
       "Estado RSVP",
       "Pases Confirmados",
       "Mensaje Familia",
@@ -384,6 +390,7 @@ export default function AdminPage() {
       `"${(f.display_name || "").replace(/"/g, '""')}"`,
       `"${(f.reference_code || "").replace(/"/g, '""')}"`,
       f.invited_guest_count || 0,
+      `"${(f.guest_names || "").replace(/"/g, '""')}"`,
       `"${f.rsvp_status || "pending"}"`,
       f.confirmed_guest_count || 0,
       `"${(f.optional_message || "").replace(/"/g, '""')}"`,
@@ -412,6 +419,7 @@ export default function AdminPage() {
         !search ||
         (f.display_name && f.display_name.toLowerCase().includes(search)) ||
         (f.reference_code && f.reference_code.toLowerCase().includes(search)) ||
+        (f.guest_names && f.guest_names.toLowerCase().includes(search)) ||
         (f.internal_notes && f.internal_notes.toLowerCase().includes(search));
 
       if (!matchSearch) return false;
@@ -785,6 +793,11 @@ export default function AdminPage() {
                           <code className="ref-code">{fam.reference_code}</code>
                           {fam.internal_notes && <span className="notes-preview">💬 {fam.internal_notes}</span>}
                         </div>
+                        {fam.guest_names && (
+                          <div className="guest-names-preview" style={{ fontSize: "12px", color: "#475569", marginTop: "4px" }}>
+                            👤 <em>{fam.guest_names}</em>
+                          </div>
+                        )}
                       </td>
                       <td>
                         <span className="guest-count-pill">
@@ -939,6 +952,19 @@ export default function AdminPage() {
                       onChange={(e) => setFormGuestCount(parseInt(e.target.value, 10) || 1)}
                     />
                   </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Nombres de los Invitados contemplados</label>
+                  <textarea
+                    rows="2"
+                    placeholder="Ej. Juan Pérez, María Gómez, Sofía Pérez (separados por coma o renglón)"
+                    value={formGuestNames}
+                    onChange={(e) => setFormGuestNames(e.target.value)}
+                  />
+                  <small style={{ color: "#64748b", fontSize: "12px", display: "block", marginTop: "4px" }}>
+                    Estos nombres se mostrarán en la sección RSVP de la invitación de esta familia.
+                  </small>
                 </div>
 
                 <div className="form-group">

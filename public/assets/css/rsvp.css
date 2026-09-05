@@ -11,7 +11,56 @@
 }
 
 .rsvp-detail {
-  margin-bottom: 26px;
+  margin-bottom: 20px;
+}
+
+/* Caja de invitados contemplados en el RSVP */
+.rsvp-guests-box {
+  margin: 0 0 24px;
+  padding: 16px 18px;
+  background: #fdfafb;
+  border: 1px solid #eddfe2;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.rsvp-guests-box[hidden] {
+  display: none;
+}
+
+.rsvp-guests-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #663f45;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rsvp-guests-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.guest-name-pill {
+  background: #ffffff;
+  color: #4a2c31;
+  border: 1px solid #dac4c8;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 1px 2px rgba(102, 63, 69, 0.05);
+}
+
+.guest-name-pill i {
+  color: #b45309;
+  font-size: 12px;
 }
 
 #rsvp-form fieldset {
@@ -95,4 +144,43 @@
 .rsvp-change-button:hover,
 .rsvp-change-button:focus {
   background: #f7f0f1;
+}
+
+/* Mensaje de bienvenida personalizado en el Hero */
+.static-hero .slide-text p.hero-welcome,
+.hero-welcome {
+  font-size: 26px !important;
+  font-weight: 600 !important;
+  color: #663f45 !important;
+  margin-bottom: 10px !important;
+  text-transform: none !important;
+  letter-spacing: 0.5px;
+}
+
+.static-hero .slide-text p.hero-welcome strong,
+.hero-welcome strong {
+  color: #8a4853;
+  font-weight: 700;
+}
+
+.static-hero .slide-text p.hero-welcome-sub,
+.hero-welcome-sub {
+  font-size: 16px !important;
+  color: #6c5a5d !important;
+  text-transform: none !important;
+  line-height: 1.6 !important;
+  max-width: 580px;
+  margin: 0 auto !important;
+  font-weight: 400;
+}
+
+@media (max-width: 767px) {
+  .static-hero .slide-text p.hero-welcome,
+  .hero-welcome {
+    font-size: 20px !important;
+  }
+  .static-hero .slide-text p.hero-welcome-sub,
+  .hero-welcome-sub {
+    font-size: 14px !important;
+  }
 }

@@ -7,6 +7,8 @@
     const status = document.getElementById("rsvp-status");
     const familyName = document.getElementById("family-name");
     const guestCount = document.getElementById("guest-count");
+    const guestNamesBox = document.getElementById("guest-names-box");
+    const guestNamesList = document.getElementById("guest-names-list");
     const messageField = document.getElementById("rsvp-message");
     const summary = document.getElementById("rsvp-summary");
     const summaryText = document.getElementById("rsvp-summary-text");
@@ -59,6 +61,32 @@
 
             familyName.textContent = invitation.familyName;
             guestCount.textContent = guestLabel(invitation.guestCount);
+            const heroFamilyName = document.getElementById("hero-family-name");
+            if (heroFamilyName) {
+                heroFamilyName.textContent = invitation.familyName;
+            }
+
+            if (invitation.guestNames && invitation.guestNames.trim()) {
+                const names = invitation.guestNames
+                    .split(/[\n,;]+/)
+                    .map(function (n) { return n.trim(); })
+                    .filter(Boolean);
+
+                if (names.length > 0 && guestNamesList) {
+                    guestNamesList.innerHTML = names
+                        .map(function (name) {
+                            var safe = name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                            return '<span class="guest-name-pill"><i class="ti-user"></i> ' + safe + "</span>";
+                        })
+                        .join("");
+                    if (guestNamesBox) guestNamesBox.hidden = false;
+                } else if (guestNamesBox) {
+                    guestNamesBox.hidden = true;
+                }
+            } else if (guestNamesBox) {
+                guestNamesBox.hidden = true;
+            }
+
             loading.hidden = true;
             if (invitation.rsvp && invitation.rsvp.status !== "pending") {
                 const currentChoice = form.querySelector(`input[value="${invitation.rsvp.status === "accepted" ? "yes" : "no"}"]`);

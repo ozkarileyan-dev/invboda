@@ -11,14 +11,19 @@ create table public.families (
   reference_code text not null unique,
   display_name text not null,
   invited_guest_count smallint not null check (invited_guest_count between 1 and 20),
+  guest_names text,
   active boolean not null default true,
   internal_notes text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
+-- Migración para tablas existentes:
+alter table public.families add column if not exists guest_names text;
+
 comment on table public.families is 'Registro previo de cada familia o grupo invitado.';
 comment on column public.families.invited_guest_count is 'Número total de personas contempladas para la familia.';
+comment on column public.families.guest_names is 'Nombres de los integrantes o invitados contemplados en el pase familiar.';
 
 -- Opcional: permite guardar los nombres de los integrantes ya contemplados.
 create table public.family_members (
@@ -270,6 +275,7 @@ select
   f.reference_code,
   f.display_name,
   f.invited_guest_count,
+  f.guest_names,
   f.active,
   f.internal_notes,
   f.created_at as family_created_at,

@@ -29,7 +29,7 @@ export default async function handler(request, response) {
         // Fallback si la vista no ha sido actualizada todavía en Supabase
         console.warn("Consulta a family_invitation_summary falló, intentando fallback:", err.message);
         families = await supabaseRequest(
-          "families?select=id,reference_code,display_name,invited_guest_count,active,internal_notes,created_at,updated_at&order=display_name.asc"
+          "families?select=id,reference_code,display_name,invited_guest_count,guest_names,active,internal_notes,created_at,updated_at&order=display_name.asc"
         );
       }
 
@@ -58,6 +58,7 @@ export default async function handler(request, response) {
         display_name,
         reference_code,
         invited_guest_count,
+        guest_names,
         internal_notes,
         active = true,
         generate_token = true
@@ -97,6 +98,7 @@ export default async function handler(request, response) {
           display_name: display_name.trim(),
           reference_code: code,
           invited_guest_count: count,
+          guest_names: guest_names?.trim() || null,
           internal_notes: internal_notes?.trim() || null,
           active: Boolean(active)
         })
@@ -131,7 +133,7 @@ export default async function handler(request, response) {
     // PATCH / PUT: Actualizar datos de una familia
     // ------------------------------------------------------------------------
     if (request.method === "PATCH" || request.method === "PUT") {
-      const { id, display_name, reference_code, invited_guest_count, internal_notes, active } =
+      const { id, display_name, reference_code, invited_guest_count, guest_names, internal_notes, active } =
         request.body || {};
 
       if (!id) {
@@ -156,6 +158,10 @@ export default async function handler(request, response) {
           return response.status(400).json({ error: "El cupo de invitados debe estar entre 1 y 20." });
         }
         updates.invited_guest_count = count;
+      }
+
+      if (guest_names !== undefined) {
+        updates.guest_names = guest_names ? guest_names.trim() : null;
       }
 
       if (internal_notes !== undefined) {
