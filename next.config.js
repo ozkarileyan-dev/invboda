@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   outputFileTracingIncludes: {
-    "/*": ["./public/index.html"]
+    "/*": ["./index.html", "./public/index.html"]
   }
 };
 

@@ -49,7 +49,18 @@ export async function getServerSideProps(context) {
   try {
     const { readFile } = await import("fs/promises");
     const { join } = await import("path");
-    const template = await readFile(join(process.cwd(), "public", "index.html"), "utf8");
+    let template;
+    for (const templatePath of [
+      join(process.cwd(), "index.html"),
+      join(process.cwd(), "public", "index.html")
+    ]) {
+      try {
+        template = await readFile(templatePath, "utf8");
+        break;
+      } catch {
+      }
+    }
+    if (!template) throw new Error("No se encontró el template de la invitación.");
     let body = template.match(/<body[^>]*>([\s\S]*)<\/body>/i)?.[1] || "";
     // Remover scripts embebidos en el template para cargarlos ordenadamente en React
     body = body.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
