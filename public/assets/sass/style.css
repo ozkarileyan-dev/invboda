@@ -3444,6 +3444,7 @@ img {
 .static-hero .wpo-static-hero-inner {
   padding-bottom: 0px;
   padding-left: 240px;
+  text-align: center;
 }
 @media (max-width: 1800px) {
   .static-hero .wpo-static-hero-inner {

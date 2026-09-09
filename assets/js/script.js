@@ -782,6 +782,12 @@
             );
         });
     }
+    initCountdown("#clock", "2026-11-21 14:00:00", {
+        days: "Días", hours: "Horas", minutes: "Minutos", seconds: "Segundos"
+    });
+    initCountdown2("#clock2", "2026-11-21 14:00:00", {
+        month: "Mes", days: "Días", hours: "Horas", minutes: "Minutos", seconds: "Segundos"
+    });
 
     /*------------------------------------------
         = PRODUCT QUANTITY (TouchSpin)
@@ -922,12 +928,6 @@
         initProductQuantity();
         initPriceSlider();
         initCartButtons();
-        initCountdown("#clock", "2026-11-21 14:00:00", {
-            days: "Días", hours: "Horas", minutes: "Minutos", seconds: "Segundos"
-        });
-        initCountdown2("#clock2", "2026-11-21 14:00:00", {
-            month: "Mes", days: "Días", hours: "Horas", minutes: "Minutos", seconds: "Segundos"
-        });
         initContactForm();
     });
 
