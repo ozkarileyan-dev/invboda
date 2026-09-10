@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Head from "next/head";
 import { findInvitation, validToken } from "../lib/invitation";
+import { invitationBodyTemplate } from "../lib/invitation-template";
 
 export async function getServerSideProps(context) {
   const queryToken = context.query?.token;
@@ -45,25 +46,27 @@ export async function getServerSideProps(context) {
     console.warn("No se pudo verificar el token en Supabase durante SSR:", error.message);
   }
 
-  // 4. Si el token es válido, leer e inyectar el cuerpo del template
+  // 4. Si el token es válido, inyectar el cuerpo del template
   try {
-    const { readFile } = await import("fs/promises");
-    const { join } = await import("path");
-    let template;
-    for (const templatePath of [
-      join(process.cwd(), "index.html"),
-      join(process.cwd(), "public", "index.html")
-    ]) {
-      try {
-        template = await readFile(templatePath, "utf8");
-        break;
-      } catch {
+    let body = invitationBodyTemplate || "";
+
+    if (!body) {
+      const { readFile } = await import("fs/promises");
+      const { join } = await import("path");
+      for (const templatePath of [
+        join(process.cwd(), "public", "index.html"),
+        join(process.cwd(), "index.html")
+      ]) {
+        try {
+          const template = await readFile(templatePath, "utf8");
+          body = template.match(/<body[^>]*>([\s\S]*)<\/body>/i)?.[1] || "";
+          body = body.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
+          if (body) break;
+        } catch {}
       }
     }
-    if (!template) throw new Error("No se encontró el template de la invitación.");
-    let body = template.match(/<body[^>]*>([\s\S]*)<\/body>/i)?.[1] || "";
-    // Remover scripts embebidos en el template para cargarlos ordenadamente en React
-    body = body.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
+
+    if (!body) throw new Error("No se encontró el template de la invitación.");
 
     const familyDisplayName = invitation?.families?.display_name || "Familia";
     body = body.replace(/\{\{FAMILY_NAME\}\}/g, familyDisplayName);
@@ -76,7 +79,7 @@ export async function getServerSideProps(context) {
       }
     };
   } catch (err) {
-    console.error("Error leyendo template public/index.html:", err);
+    console.error("Error cargando template de invitación:", err);
     return {
       props: {
         isValid: false,

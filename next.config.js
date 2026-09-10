@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  outputFileTracingIncludes: {
-    "/*": ["./index.html", "./public/index.html"]
-  }
+  reactStrictMode: true,
 };
 
 module.exports = nextConfig;
