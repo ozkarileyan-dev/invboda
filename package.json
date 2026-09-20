@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/sync-template.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "sync:template": "node scripts/sync-template.mjs",
     "diagnose:invitation": "node scripts/diagnose-invitation.mjs"
   },
   "dependencies": {

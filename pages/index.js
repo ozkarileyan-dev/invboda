@@ -48,9 +48,10 @@ export async function getServerSideProps(context) {
 
   // 4. Si el token es válido, inyectar el cuerpo del template
   try {
-    let body = invitationBodyTemplate || "";
+    let body = "";
 
-    if (!body) {
+    // Intentar leer desde el disco (desarrollo local / Docker) para reflejar cambios en caliente
+    try {
       const { readFile } = await import("fs/promises");
       const { join } = await import("path");
       for (const templatePath of [
@@ -59,11 +60,18 @@ export async function getServerSideProps(context) {
       ]) {
         try {
           const template = await readFile(templatePath, "utf8");
-          body = template.match(/<body[^>]*>([\s\S]*)<\/body>/i)?.[1] || "";
-          body = body.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
-          if (body) break;
+          const extracted = template.match(/<body[^>]*>([\s\S]*)<\/body>/i)?.[1] || "";
+          if (extracted) {
+            body = extracted.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
+            break;
+          }
         } catch {}
       }
+    } catch {}
+
+    // En producción (Vercel Serverless), usar el template empaquetado como respaldo confiable
+    if (!body) {
+      body = invitationBodyTemplate || "";
     }
 
     if (!body) throw new Error("No se encontró el template de la invitación.");
