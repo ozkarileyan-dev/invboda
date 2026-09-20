@@ -5065,6 +5065,16 @@ wpo-hero-slider-s3
   background: #fff;
   padding: 30px;
 }
+.wpo-event-section .wpo-event-wrap .wpo-event-item .wpo-event-img {
+  height: 220px;
+  overflow: hidden;
+}
+.wpo-event-section .wpo-event-wrap .wpo-event-item .wpo-event-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
 @media (max-width: 1400px) {
   .wpo-event-section .wpo-event-wrap .wpo-event-item {
     padding: 15px;
