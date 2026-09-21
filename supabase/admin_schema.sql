@@ -45,11 +45,12 @@ create table if not exists public.family_members (
   unique (family_id, full_name)
 );
 
--- 5. Tabla de tokens de invitación (secreto hash SHA-256)
+-- 5. Tabla de tokens de invitación
 create table if not exists public.invitation_tokens (
   id uuid primary key default gen_random_uuid(),
   family_id uuid not null references public.families(id) on delete cascade,
   token_hash char(64) not null unique,
+  raw_token text,
   token_prefix varchar(16) not null,
   invited_guest_count smallint not null check (invited_guest_count between 1 and 20),
   issued_at timestamptz not null default now(),
@@ -61,6 +62,9 @@ create table if not exists public.invitation_tokens (
     expires_at is null or expires_at > issued_at
   )
 );
+
+-- Conserva los enlaces ya emitidos y permite mostrarlos nuevamente en el panel.
+alter table public.invitation_tokens add column if not exists raw_token text;
 
 create index if not exists invitation_tokens_family_id_idx on public.invitation_tokens (family_id);
 create index if not exists invitation_tokens_active_idx on public.invitation_tokens (family_id) where revoked_at is null;
@@ -210,7 +214,7 @@ create trigger rsvp_responses_audit
 after insert or update on public.rsvp_responses
 for each row execute procedure public.audit_rsvp_response();
 
--- 12. Función RPC para emitir tokens seguros (re-emisión revoca el anterior)
+-- 12. Función RPC para emitir tokens seguros sin cambiar un enlace ya emitido
 create or replace function public.issue_invitation_token(
   p_family_id uuid,
   p_expires_at timestamptz default '2026-11-22 06:00:00+00'
@@ -230,6 +234,7 @@ declare
   v_token_hash char(64);
   v_guest_count smallint;
   v_token_id uuid;
+  v_existing_expires_at timestamptz;
 begin
   select invited_guest_count
   into v_guest_count
@@ -240,10 +245,23 @@ begin
     raise exception 'La familia no existe o está inactiva.';
   end if;
 
-  -- Revocar tokens previos activos de esta familia
-  update public.invitation_tokens
-  set revoked_at = now()
-  where family_id = p_family_id and revoked_at is null;
+  select existing.id, existing.raw_token, existing.expires_at
+  into v_token_id, v_token, v_existing_expires_at
+  from public.invitation_tokens as existing
+  where existing.family_id = p_family_id
+    and existing.revoked_at is null
+    and existing.raw_token is not null
+  order by existing.issued_at desc
+  limit 1;
+
+  if found then
+    return query select
+      v_token_id,
+      v_token,
+      '/?token=' || v_token,
+      v_existing_expires_at;
+    return;
+  end if;
 
   -- Formato seguro: inv1_ + 64 caracteres hexadecimales aleatorios (256 bits criptográficos)
   v_token := 'inv1_' || encode(gen_random_bytes(32), 'hex');
@@ -252,12 +270,14 @@ begin
   insert into public.invitation_tokens (
     family_id,
     token_hash,
+    raw_token,
     token_prefix,
     invited_guest_count,
     expires_at
   ) values (
     p_family_id,
     v_token_hash,
+    v_token,
     left(v_token, 16),
     v_guest_count,
     p_expires_at
